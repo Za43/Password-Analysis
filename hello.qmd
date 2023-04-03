@@ -1,1 +1,18 @@
+---
+title: "TBD"
+author: "Zaid and Zoe"
+format: pdf
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r load-data}
+library(tidyverse) 
+library(tidymodels)
+pass <- read.csv("~/STA210 Final Project/data/pass.csv")
+```
+
+also: https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-03-02/readme.md
+
+https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-03-02/youtube.csv
 
