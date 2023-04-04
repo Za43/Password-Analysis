@@ -9,10 +9,19 @@ editor_options:
 ```{r load-data}
 library(tidyverse) 
 library(tidymodels)
-pass <- read.csv("~/STA210 Final Project/data/pass.csv")
+library(stringr)
+pass <- read.csv("data/pass.csv")
 ```
 
 also: https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-03-02/readme.md
 
 https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-03-02/youtube.csv
 
+```{r edit-data}
+
+pass_more <- pass |>
+  mutate(pass_length = nchar(password),
+         num_digits = str_count(password, "[0-9]"),
+         num_letters = str_count(password, "[a-z]"),
+         num_random = pass_length - (num_digits + num_letters))
+```
