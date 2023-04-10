@@ -14,13 +14,8 @@ library(stringi)
 pass <- read.csv("data/pass.csv")
 ```
 
-also: https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-03-02/readme.md
-
-https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-03-02/youtube.csv
 
 ```{r edit-data}
-
-
 uniqchars <- function(x) unique(strsplit(x, "")[[1]]) 
 
 pass_more <- pass |>
@@ -29,4 +24,89 @@ pass_more <- pass |>
          num_letters = str_count(password, "[a-z]"),
          num_vowels = str_count(password, "[a,e,i,o,u]"),
          num_unique = sapply(strsplit(password, ""), function(x) length(unique(x))))
+
+##let's also remove rows 501 through 507 bc they're all NAs across all variables 
 ```
+
+# Introduction 
+*The research question and motivation are clearly stated in the introduction, including citations for the data source and any external research. The data are clearly described, including a description about how the data were originally collected and a concise definition of the variables relevant to understanding the report. The data cleaning process is clearly described, including any decisions made in the process (e.g., creating new variables, removing observations, etc.) The explanatory data analysis helps the reader better understand the observations in the data along with interesting and relevant relationships between the variables. It incorporates appropriate visualizations and summary statistics.* 
+
+## Research Question and Data 
+
+rank - popularity in their database of released passwords
+password - Actual text of the password
+category - What category does the password fall in to?
+value - Time to crack by online guessing
+time_unit - Time unit to match with value
+- *idk what this rly means like why would the value be in dif units anyways* 
+strength - Strength = quality of password where 10 is highest, 1 is lowest, please note that these are relative to these generally bad passwords
+- *weird that we have some strengths like 48 lol i'm assuming this is on a dif scale? should we remove these obs or recalculate these strengths?* 
+pass_length - 
+num_digits - 
+num_letters - 
+num_vowels - 
+num_unique - 
+
+## Exploratory Data Analysis 
+
+```{r EDA}
+pass_more %>%
+  ggplot(aes(x = pass_length)) + 
+  geom_bar() 
+
+pass_more %>%
+  ggplot(aes(x = category)) + 
+  geom_bar() 
+
+pass_more %>%
+  ggplot(aes(x = strength)) + 
+  geom_bar() 
+
+pass_more %>%
+  ggplot(aes(x = num_digits)) + 
+  geom_bar() 
+
+pass_more %>%
+  ggplot(aes(x = num_letters)) + 
+  geom_bar() 
+
+pass_more %>%
+  ggplot(aes(x = num_vowels)) + 
+  geom_bar() 
+
+pass_more %>%
+  ggplot(aes(x = num_unique)) + 
+  geom_bar() 
+```
+
+Preliminary findings: 
+- rank - (from dataset) top 5 most popular passwords were password, 123456, 12345678, 1234, and qwerty
+- category - name passwords most common
+- length - passwords of length 6 most common 
+- strength - only looking at strength ratings 1-10, passwords with 8 rating most popular (these are relative to generally bad passwords tho)
+- number digits: 0 digits most popular 
+- number letters: 6 most common (makes sense if digits aren't common and passwords are usually of length 6)
+- number vowels: 2 most common 
+- num unique: 6 most common, 5 not too far off 
+
+Conclusions: 
+- seeming like name passwords of length 6 and relatively high strength compared to generally bad passwords, without numbers are the most common. These are probably actual words and not just random repeated letters since the num unique is typically equal to the length (also just looking at the passwords)
+
+# Methodology 
+
+1. run regressions to see which help predict password strength most? what is our response variable tho 
+- can do LASSO and stepwise and compare models ? 
+- fit model with interaction terms maybe? 
+
+2. hypothesis test 
+
+3. we could prolly run a logistic regression but not sure why we'd want to predict the odds? idk 
+
+not seeing use for multinomial or ordinal regression bc i doubt our outcome will be categorical... 
+
+don't think need mixed model bc not seeing any grouping 
+
+# Results 
+
+# Discussion 
+
