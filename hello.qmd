@@ -16,6 +16,23 @@ library(MASS)
 library(glmnet)
 library(caret)
 pass <- read.csv("data/pass.csv")
+
+# To-dos 
+# Remove these variables because not meaningful
+#Font size
+ #Rank alt 
+#Time unit to crack by online guessing + time unit to match with value (since we created a new variable)  
+
+#Add noise to true_val 
+
+# What characteristics yield good passwords? 
+# How long takes to crack
+#Strength
+#Generally speaking, the strength of a password is determined by three things: the length of the character set used, the length of the password itself, and to a lesser extent, the variety in characters chosen.
+#What kind of passwords have a strong combination of both?  
+  
+  #**humans vs. computers??
+
 ```
 
 ```{r edit-data, message = F, warning = F}
