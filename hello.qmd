@@ -58,7 +58,7 @@ pass_more <- pass |>
 # Introduction
 
 | Variable Name     | Type      | Description                                                      |
-|-------------------|-----------|------------------------------------------------------------------|
+|--------------|--------------|--------------------------------------------|
 | rank              | double    | Popularity in their database of released passwords               |
 | password          | character | Actual text of password                                          |
 | category          | character | Classification of type of password                               |
@@ -143,13 +143,24 @@ Conclusions: - seeming like name passwords of length 6 and relatively high stren
 
 ```{r methods, message = F, warning = F}
 
-y <- pass_more$strength
-x <- model.matrix(strength ~ category + pass_length + num_letters + num_digits + num_vowels + num_unique,
+y1 <- pass_more$strength
+x1 <- model.matrix(strength ~ . - password - true_val - offline_crack_sec - rank,
             data = pass_more) 
-m_lasso_strength <- cv.glmnet(x, y, alpha = 1)
+
+y2 <- pass_more$true_val
+x2 <- model.matrix(true_val ~ . - password - offline_crack_sec - strength - rank,
+            data = pass_more) 
+
+m_lasso_strength <- cv.glmnet(x1, y1, alpha = 1)
 best_lambda <- m_lasso_strength$lambda.min
 best_lambda
-m_best <- glmnet(x, y, alpha = 1, lambda = best_lambda)
+m_best <- glmnet(x1, y1, alpha = 1, lambda = best_lambda)
+m_best$beta
+
+m_lasso_strength <- cv.glmnet(x2, y2, alpha = 1)
+best_lambda <- m_lasso_strength$lambda.min
+best_lambda
+m_best <- glmnet(x2, y2, alpha = 1, lambda = best_lambda)
 m_best$beta
 ```
 
