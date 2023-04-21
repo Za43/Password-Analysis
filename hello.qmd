@@ -155,7 +155,7 @@ m_best$beta
 
 not seeing use for multinomial or ordinal regression bc i doubt our outcome will be categorical...
 
-don't think need mixed model bc not seeing any grouping
+don't think need mixed model bc not seeing any grouping -- ooh wait maybe within category? ehhh maybe not 
 
 #Generally speaking, the strength of a password is determined by three things: the length of the character set used, the length of the password itself, and to a lesser extent, the variety in characters chosen.
 
