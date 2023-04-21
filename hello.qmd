@@ -17,12 +17,6 @@ library(glmnet)
 library(caret)
 pass <- read.csv("data/pass.csv")
 
-# To-dos 
-# Remove these variables because not meaningful
-#Font size
- #Rank alt 
-#Time unit to crack by online guessing + time unit to match with value (since we created a new variable)  
-
 #Add noise to true_val 
 
 # What characteristics yield good passwords? 
