@@ -50,10 +50,9 @@ nrow(pass_more)
 
 In our increasingly technology-oriented world, data security is a pressing and essential topic. As cybercriminals' hacking tools have improved, data leaks at major companies across industries such as Yahoo, Facebook, LinkedIn, Mariott International, Adobe, Bank of America, British Airways, and CVS have compromised billions of users' personal information. In 2022, IBM found that the average data breach in the U.S. cost companies an average of $9.44 million in lost business, crisis management efforts, and ransom payments. Data breaches can also allow hackers to access users' personal information such as names, addresses, credit card details, and Social Security numbers, which can be used for financial fraud or identity theft. One critical aspect of data security is password strength, which can reduce the risk of cybercriminals guessing users' passwords and acesssing personal information. Given our interset in datasecurity and the topcality of password strength as a key facet of this subject area, we wanted to explore password data for our project. 
 
-Our research question is: What characteristics yield strong passwords? We measure password strength in two ways: "strength," which is calculated XX, and the time the password takes to crack by online guessing. We decide which passwords are the strongest overall by looking at the characteristics that appear to impact both measures of password strength. 
+Our research question is: What characteristics yield strong passwords? We measure password strength in two ways: "strength" (which is calculated by an algorithm based on the password's length and complexity and is comparative to the generally bad passwords in the dataset) and the time the password takes to crack by online guessing. We decide which passwords are the strongest overall by looking at the characteristics that appear to impact both measures of password strength. 
 
 *do we want to look at true_val or offline crack sec* 
-*what does "strength" mean, i.e. how is it calculated?* 
 
 External research: 
 https://www.keepersecurity.com/blog/2022/09/14/why-is-password-security-important/
@@ -90,19 +89,27 @@ In the cleaning process, we removed the last seven observations, as all their va
 ```{r EDA, message = F, warning = F}
 pass_ordered <- pass_more
 
-pass_ordered$category <- with(pass_ordered, reorder(category , strength, median , na.rm=T))
+pass_ordered$category <- with(pass_ordered, 
+                              reorder(category, strength, median, na.rm=T))
+
+# should we be using pass_ordered here too? also I think pass_ordered should prolly be in the data cleaning section but not sure 
 
 pass_more %>%
   ggplot(aes(x = strength)) + 
   geom_bar() +
-  theme_minimal() + 
+  theme_bw() + 
   scale_fill_viridis_d()
+
+#color not showing up 
 
 pass_ordered |>
   ggplot(aes(x = strength, y = category, fill = category)) + 
   geom_boxplot() +
   theme_minimal() + 
-  scale_fill_viridis_d()
+  scale_fill_viridis_d() + 
+  labs(x = "Strength", y = "Category")
+
+#we should not fill by category bc the themes are redundant if they appear on the side too... if we can color but get rid of the category thing on the side we can do that 
 
 pass_more %>%
   group_by(num_unique, strength, category) %>%
@@ -112,11 +119,15 @@ pass_more %>%
   geom_point() +
   theme_minimal() + 
   scale_fill_viridis_d()
+
+#same not as above here
+#Let's only do one plot for category (choose btw this and above). Can choose another factor to do EDA on based on what we think will be important (or what we actually find is important based on LASSO)
+
+# we need summary statistics too according to directions 
 ```
 
-Preliminary findings: - rank - (from dataset) top 5 most popular passwords were password, 123456, 12345678, 1234, and qwerty - category - name passwords most common - length - passwords of length 6 most common - strength - only looking at strength ratings 1-10, passwords with 8 rating most popular (these are relative to generally bad passwords tho) - number digits: 0 digits most popular - number letters: 6 most common (makes sense if digits aren't common and passwords are usually of length 6) - number vowels: 2 most common - num unique: 6 most common, 5 not too far off
-
-Conclusions: - seeming like name passwords of length 6 and relatively high strength compared to generally bad passwords, without numbers are the most common. These are probably actual words and not just random repeated letters since the num unique is typically equal to the length (also just looking at the passwords)
+Preliminary findings: 
+strength - most common strength is 8, but again, note that this is in relation to the generally bad passwords in the dataset. 
 
 *The explanatory data analysis helps the reader better understand the observations in the data along with interesting and relevant relationships between the variables. It incorporates appropriate visualizations and summary statistics.* 
 
@@ -145,20 +156,15 @@ m_best <- glmnet(x2, y2, alpha = 1, lambda = best_lambda)
 m_best$beta
 ```
 
-1.  run regressions to see which help predict password strength most? what is our response variable tho
+Based on prior knowledge / research, the variables we think will be important to include are pass_length, num_digits, and num_unique 
+*- do we think category is important?* 
+- since online cracking is partially done by guessing common passwords...
 
--   can do LASSO and stepwise and compare models ?
--   fit model with interaction terms maybe?
-
-2.  hypothesis test
-
-3.  we could prolly run a logistic regression but not sure why we'd want to predict the odds? idk
-
-not seeing use for multinomial or ordinal regression bc i doubt our outcome will be categorical...
-
-don't think need mixed model bc not seeing any grouping -- ooh wait maybe within category? ehhh maybe not 
-
-#Generally speaking, the strength of a password is determined by three things: the length of the character set used, the length of the password itself, and to a lesser extent, the variety in characters chosen.
+*to-dos* 
+- LASSO for online crack sec (and offline if we decide to do that) 
+- hypothesis test for idk yet 
+- should we plug in our LASSO variables into a regression (e.g. ordinal for password strength?, OLS for crack time?) or should we just use the LASSO coefficients themselves
+- would it be too much to see whether these strong passwords are the most common? 
 
 # Results
 
