@@ -15,6 +15,7 @@ library(leaps)
 library(MASS)
 library(glmnet)
 library(caret)
+library(Matrix)
 pass <- read.csv("data/pass.csv")
 
 # To-dos 
@@ -44,6 +45,7 @@ pass_more <- pass |>
                                   ifelse(time_unit == "days", 86400*value,
                                          ifelse(time_unit == "hours", 3600*value,
                                                 ifelse(time_unit =="minutes", 60*value,value))))),
+         true_val = jitter(true_val),
          pass_length = nchar(password),
          font_size = NULL,
          value = NULL,
@@ -62,7 +64,7 @@ pass_more <- pass |>
 # Introduction
 
 | Variable Name     | Type      | Description                                                      |
-|----------------|----------------|---------------------------------------|
+|-------------------|-----------|------------------------------------------------------------------|
 | rank              | double    | Popularity in their database of released passwords               |
 | password          | character | Actual text of password                                          |
 | category          | character | Classification of type of password                               |
