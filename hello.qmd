@@ -48,20 +48,21 @@ nrow(pass_more)
 
 ## Research Question and Motivation 
 
-significance -- passwords becoming more important as there is an ever-increasing market for user data, discussions on data privacy are growing too 
-- also stronger hacking tools 
-- increasingly technology-oriented world
-- we wanted to explore what characteristics yield strong passwords? 
-- looking at this in two ways: "strength", which is calculated by XX; and how long takes to crack by online guessing (what does this really mean tho?)
-- we will decide which passwords are "strongest" by looking at which factors seem to be important for both strength and time to crack 
+In our increasingly technology-oriented world, data security is a pressing and essential topic. As cybercriminals' hacking tools have improved, data leaks at major companies across industries such as Yahoo, Facebook, LinkedIn, Mariott International, Adobe, Bank of America, British Airways, and CVS have compromised billions of users' personal information. In 2022, IBM found that the average data breach in the U.S. cost companies an average of $9.44 million in lost business, crisis management efforts, and ransom payments. Data breaches can also allow hackers to access users' personal information such as names, addresses, credit card details, and Social Security numbers, which can be used for financial fraud or identity theft. One critical aspect of data security is password strength, which can reduce the risk of cybercriminals guessing users' passwords and acesssing personal information. Given our interset in datasecurity and the topcality of password strength as a key facet of this subject area, we wanted to explore password data for our project. 
 
-We believe that the length of the password, as well as its composition could possibly impact the strength of the password, and so we decided to add them in to investigate their various relationships.
+Our research question is: What characteristics yield strong passwords? We measure password strength in two ways: "strength," which is calculated XX, and the time the password takes to crack by online guessing. We decide which passwords are the strongest overall by looking at the characteristics that appear to impact both measures of password strength. 
 
-*The research question and motivation are clearly stated in the introduction, including citations for the data source and any external research.* 
+*do we want to look at true_val or offline crack sec* 
+*what does "strength" mean, i.e. how is it calculated?* 
 
-TidyTuesday: https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-01-14
+External research: 
+https://www.keepersecurity.com/blog/2022/09/14/why-is-password-security-important/
+https://www.bleepingcomputer.com/news/security/the-benefits-of-making-password-strength-more-transparent/
+https://www.ibm.com/downloads/cas/3R8N1DZJ 
 
-Information is Beautiful passwords spreadsheet: https://docs.google.com/spreadsheets/d/1cz7TDhm0ebVpySqbTvrHrD3WpxeyE4hLZtifWSnoNTQ/edit#gid=21 
+Data source: 
+https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-01-14
+https://docs.google.com/spreadsheets/d/1cz7TDhm0ebVpySqbTvrHrD3WpxeyE4hLZtifWSnoNTQ/edit#gid=21 
 
 ## Data Description 
 
@@ -82,7 +83,7 @@ Information is Beautiful passwords spreadsheet: https://docs.google.com/spreadsh
 
 Our data come from Tidy Tuesday, originally sourced from Information is Beautiful, a design company that distills data into visualizations and infographics. Information is Beautiful acquired its data on passwords by deep-mining 20 separate data breaches in 2017, including breaches of Facebook, Sony, and  Yahoo. The data only includes the 500 most popular passwords, which also tended to be low-strength. 
 
-In the cleaning process, we removed the last seven observations, as all their values were "NA." We also removed several variables that appeared in the original dataset. First, we removed the variables that had a strength recorded over ten as those may have been miscalculations or strengths that were not standardized to values 1 through 10. Second, we removed the `rank_alt` variable because we wanted to focus on the passwords' first ranks of popularity, as opposed to their secondary ranks, because their first ranks were a clearer indicator of how common they were. Third, also removed the font_size variable, as the font sizes were chosen arbitrarily to display passwords in a graphic on the Knowledge is Beautiful webiste. Fourth and finally, we combined the `value` and `time_unit` variables into one time standardized to seconds called `true_val`. Previously, `value` referred to the time to crack by online guessing, and time unit was the time unit to match with that value (seconds, minutes, hours, days, months, or years). We added noise to our new `true_val` variable because the time to crack by online guessing only included discrete values (2.17 years, 0.00321 days, etc.). From there, we were left with 485 observations. Additionally, we added five new variables: pass_length, num_digits, num_letters, num_vowels, and num_unique. 
+In the cleaning process, we removed the last seven observations, as all their values were "NA." We also removed several variables that appeared in the original dataset. First, we removed the variables that had a strength recorded over ten as those may have been miscalculations or strengths that were not standardized to values 1 through 10. Second, we removed the `rank_alt` variable because we wanted to focus on the passwords' first ranks of popularity, as opposed to their secondary ranks, because their first ranks were a clearer indicator of how common they were. Third, also removed the font_size variable, as the font sizes were chosen arbitrarily to display passwords in a graphic on the Knowledge is Beautiful webiste. Fourth and finally, we combined the `value` and `time_unit` variables into one time standardized to seconds called `true_val`. Previously, `value` referred to the time to crack by online guessing, and time unit was the time unit to match with that value (seconds, minutes, hours, days, months, or years). We added noise to our new `true_val` variable because the time to crack by online guessing only included discrete values (2.17 years, 0.00321 days, etc.). From there, we were left with 485 observations. Additionally, we added five new variables: pass_length, num_digits, num_letters, num_vowels, and num_unique. We added these variables because we believe that the length of the password, as well as its composition could impact password strength.
 
 ## Exploratory Data Analysis
 
