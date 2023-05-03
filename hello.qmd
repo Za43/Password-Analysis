@@ -73,7 +73,7 @@ Data source: https://github.com/rfordatascience/tidytuesday/tree/master/data/202
 | category          | categorical | Classification of type of password                               |
 | true_val          | double      | Time to crack by online guessing standardized to seconds         |
 | offline_crack_sec | double      | Time to crack offline in seconds                                 |
-| strength          | ordinal     | Quality of password where 10 is highest, 1 is lowest             |
+| strength          | numeric     | Quality of password where 10 is highest, 1 is lowest             |
 | pass_length       | numeric     | Length of the password                                           |
 | num_digits        | numeric     | Number of digits in the password                                 |
 | num_letters       | numeric     | Number of letters in the password                                |
