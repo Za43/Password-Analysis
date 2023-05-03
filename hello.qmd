@@ -180,7 +180,16 @@ To better understand our data, we also calculated summary statistics to determin
 
 # Methodology
 
+In our analysis, we treat our two outcome variables, strength and online crack time, as ordinal outcomes. *do we tho*
+
+The strength variable is a number 1-10, in order of increasing password strength, making ordinal a good fit. The strength variable meets the ordinal assumption of proportional odds, since it is reasonable to assume that one-unit changes in each predictor have the same conditional relationship with being in each strength category. For example, the strength variable is calculated in part based on password length, and each one character increase in password length has the same conditional relationship with being in each strength category.  
+
+
+Online crack time 
+
 Based on our research and prior knowledge, the variables we believe will be important to include are `pass_length`, `num_digits`, `num_unique`, and XX... 
+
+We treat strength as an ordinal variable... 
 
 *- do we think category is important?* - since online cracking is partially done by guessing common passwords...
 
