@@ -1,6 +1,6 @@
 ---
-title: "TBD"
-author: "Zaid and Zoe"
+title: "How Do Password Characteristics Affect Password Strength?"
+author: "Zaid Muqsit and Zoe Spicer"
 format: pdf
 geometry: margin=1.8cm
 editor_options: 
@@ -45,15 +45,11 @@ pass_more <- pass |>
                                     ifelse(true_val == 321408, 9, 
                                     ifelse(true_val == 8268480, 10, 11)))))))))),
          category = ifelse(category == "simple-alphanumeric", "alphanumeric", category),
-         #true_val = jitter(true_val),
          pass_length = nchar(password),
-         font_size = NULL,
          value = NULL,
          time_unit = NULL,
-         rank_alt = NULL,
          num_digits = str_count(password, "[0-9]"),
          num_letters = str_count(password, "[a-z]"),
-         num_vowels = str_count(password, "[a,e,i,o,u]"),
          num_unique = sapply(strsplit(password, ""), 
                              function(x) length(unique(x)))) |>
   filter(!is.na(rank)) |>
@@ -69,9 +65,9 @@ pass_ordered$category <- with(pass_ordered,
 
 ## Research Question and Motivation
 
-In our increasingly technology-oriented world, data security is a pressing and essential topic. As cybercriminals' hacking tools have improved, data leaks at major companies such as Yahoo, Facebook, LinkedIn, Mariott International, Adobe, Bank of America, British Airways, and CVS have compromised billions of users' personal information. In 2022, IBM found that the average data breach in the U.S. cost companies an average of \$9.44 million in lost business, crisis management efforts, and ransom payments. Data breaches can also allow hackers to access users' personal information such as names, addresses, credit card details, and Social Security numbers, which can be used for financial fraud or identity theft. One critical aspect of data security is password strength, which can reduce the risk of cybercriminals guessing users' passwords and acesssing personal information. Given our interset in datasecurity and the topcality of password strength as a key facet of this subject area, we wanted to explore password data for our project.
+In our increasingly technology-oriented world, data security is a pressing and essential topic. As cybercriminals' hacking tools have improved, data leaks at major companies such as Yahoo, Facebook, LinkedIn, Mariott International, Adobe, Bank of America, British Airways, and CVS have compromised billions of users' personal information. In 2022, IBM found that the average data breach in the U.S. cost companies an average of \$9.44 million in lost business, crisis management efforts, and ransom payments. Data breaches can also allow hackers to access users' personal information such as names, addresses, credit card details, and Social Security numbers, which can be used for financial fraud or identity theft. One critical aspect of data security is password strength, which can reduce the risk of cybercriminals guessing users' passwords and acesssing personal information. Given our interset in datasecurity and the topcality of password strength as a key aspect of this subject area, we wanted to explore password data for our project.
 
-Our research question is: What characteristics yield strong passwords? We measure password strength in two ways: "strength" (which is calculated by an algorithm based on the password's length and complexity and is comparative to the generally bad passwords in the dataset) and the time the password takes to crack by online guessing. We decide which passwords are the strongest overall by looking at the characteristics that appear to impact both measures of password strength. Sources for data and external research have been added at the end in the sources section.
+Our research question is: How do various password characteristics affect password strength? We measure password strength in two ways: "strength" (which is calculated by an algorithm based on the password's length and complexity and is comparative to the generally bad passwords in the dataset) and the time the password takes to crack by online guessing.
 
 ## Data Description
 
@@ -81,65 +77,44 @@ Our research question is: What characteristics yield strong passwords? We measur
 | password          | character   | Actual text of password                                          |
 | category          | categorical | Classification of type of password                               |
 | true_val          | double      | Time to crack by online guessing standardized to seconds         |
-| true_val_strength | double      | true_val made oridinal                                           |
+| true_val_strength | double      | true_val made numeric where 11 is most crack time, 1 is lowest   |
 | offline_crack_sec | double      | Time to crack offline in seconds                                 |
+| rank_alt          | numeric     | Secondary popularity rank in database of released passwords      |
+| font_size         | numeric     | Arbitrary font size Knowledge Is Beautiful used in graphic       |
 | strength          | numeric     | Quality of password where 10 is highest, 1 is lowest             |
 | pass_length       | numeric     | Length of the password                                           |
 | num_digits        | numeric     | Number of digits in the password                                 |
 | num_letters       | numeric     | Number of letters in the password                                |
-| num_vowels        | numeric     | Number of vowels in the password                                 |
 | num_unique        | numeric     | Number of unique characters (letters or numbers in the password) |
 
 Our data come from Tidy Tuesday, originally sourced from Information is Beautiful, a design company that distills data into visualizations and infographics. Information is Beautiful acquired its data on passwords by deep-mining 20 separate data breaches in 2017, including breaches of Facebook, Sony, and Yahoo. The data only includes the 500 most popular passwords, which also tended to be low-strength. Therefore, the `strength` variable indicates password strength in relation to these generally weak passwords.
 
-In the cleaning process, we removed the last seven observations, as all their values were "NA." We also removed several variables that appeared in the original dataset. First, we removed the variables that had a strength recorded over ten as those may have been miscalculations or strengths that were not standardized to values 1 through 10. Second, we removed the `rank_alt` variable because we wanted to focus on the passwords' first ranks of popularity, as opposed to their secondary ranks, because their first ranks were a clearer indicator of how common they were. Third, also removed the font_size variable, as the font sizes were chosen arbitrarily to display passwords in a graphic on the Knowledge is Beautiful website. Fourth and finally, we combined the `value` and `time_unit` variables into one time standardized to seconds called `true_val`. Previously, `value` referred to the time to crack by online guessing, and time unit was the time unit to match with that value (seconds, minutes, hours, days, months, or years). Additionally, we made a new variable called `true_val_strength` to allow for the possibility of ordinal regression given only certain discrete values for the online guessing time. We added noise to our new `true_val` variable because the time to crack by online guessing only included discrete values (2.17 years, 0.00321 days, etc.). From there, we were left with 485 observations.
-
-Finally, we added five new variables: pass_length, num_digits, num_letters, num_vowels, and num_unique. We added these variables because we believe that the length of the password, as well as its composition, could impact its strength.
+In the cleaning process, we removed the last seven observations, as all their values were "NA." We also removed observations that had a strength recorded over ten as those may have been miscalculations or strengths that were not standardized to values 1 through 10. From there, we were left with 485 observations. Additionally, we combined the `value` and `time_unit` variables into one time standardized to seconds called `true_val`. Previously, `value` referred to the time to crack by online guessing, and time unit was the time unit to match with that value (seconds, minutes, hours, days, months, or years). Based on `true_val`, we made a new variable called `true_val_strength` for use in ordinal regression. This variable translated `true_val` values to numbers 1-10, since `true_val` values were not actually continuous but rather discrete values (2.17 years, 0.00321 days, etc.). Standardizing these times to 1-10 also allowed us to better visualize our data, since there was a large gap between observations—some took only seconds to crack, while others took years. Finally, we added four new variables: `pass_length`, `num_digits`, `num_letters`, and `num_unique`. We added these variables because we believe that password length and composition could impact strength.
 
 ## Exploratory Data Analysis
 
-### Summary Stats Table:
+Given our prior knowledge of what makes passwords stronger, we chose to focus our exploratory data analysis on the predictors password length and number of unique characters, along with their relationships with other variables in the dataset.
+
+### Summary Statistics:
 
 ```{r EDA, message = F, warning = F, echo=FALSE}
-
-#do we have to show these calculations
-
-#st(pass_more)
 pass_more |>
   dplyr::select(-rank) |>
+  dplyr::select(-rank_alt) |>
+  dplyr::select(-font_size) |>
+  dplyr::select(-true_val) |>
+  dplyr::select(-offline_crack_sec) |>
 st(out = "return",
-   summ = c( 'mean(x)', 'median(x)', 'sd(x)', 'min(x)', 'max(x)'))
+   summ = c( 'mean(x)', 'median(x)', 'sd(x)', 'min(x)', 'max(x)')) 
 
-# pass_more %>%
-#   summarize(mean(strengh))
-# 
-# pass_more %>%
-#   summarize(mean(true_val))
-# 
-# pass_more %>%
-#   summarize(mean(num_digits))
-# 
-# pass_more %>%
-#   summarize(mean(num_letters))
-# 
-# pass_more %>%
-#   summarize(mean(num_unique))
-# 
-# pass_more %>%
-#   summarize(mean(num_vowels))
-# 
-# pass_more %>%
-#   summarize(mean(pass_length))
+## these statistics should have at least 3 decimal places, functions I tried didn't work :(
 ```
+
+From the table, the average number of digits in a password are 0.464, the average number of letters is 5.718, the average number of unique characters is 5.192, and the average password length is 6.181. In general, this indicates that the most popular passwords in the data leaks used all unique letters and rarely used numbers. In terms of our predictors, the average strength was 6.6, and the average true_val_strength was 8.6, representing an online crack time of about two and a half days. This indicates that the compared to generally weak passwords, the average password in this dataset had a higher-than-average "strength" by both measures. In other words, the distribution of our data under `strength` and `true_val_strength` are left-skewed. An explanation of why we focused on these variables can be found in the methodology section.
 
 ### Plots:
 
 ```{r EDA-2, message = F, warning = F, echo=FALSE, fig.height=10, fig.width=8}
-# pass_more |>
-#   dplyr::select(-rank) |>
-# st(out = "return", 
-#    summ = c( 'mean(x)', 'median(x)', 'sd(x)', 'min(x)', 'max(x)'))
-
 p1 <- pass_more %>%
   group_by(strength, pass_length) %>%
   summarize(freq = n()) |>
@@ -149,7 +124,8 @@ p1 <- pass_more %>%
   guides(size = "none") + 
   theme_minimal() + 
   labs(x = "Password Length", y = "Strength", 
-       title = "Are Longer Passwords Stronger?", caption = "Figure 1") +
+       title = "Longer Passwords are Typically Stronger", 
+       caption = "Figure 1") +
   theme(
       plot.margin = margin(0, 1, 1, 0, "cm")
   )
@@ -163,8 +139,8 @@ p2 <- pass_more %>%
   theme_minimal() + 
   scale_fill_viridis_d() +
   guides(color = "none", size = "none") + 
-  labs(x = "Number of Unique Terms", y = "Strength", 
-       title = "Unique Characters Changes Strength", 
+  labs(x = "Number of Unique Characters", y = "Strength", 
+       title = "Unique Characters Tend To Increase Strength", 
        subtitle = "Grouped by Category",
        caption = "Figure 2") +
     theme(
@@ -172,102 +148,49 @@ p2 <- pass_more %>%
   )
 
 p3<- pass_more |>
+  group_by(pass_length, true_val_strength) %>%
+  summarize(freq=n()) |>
   ggplot(aes(x = pass_length, y = true_val_strength)) +
-  geom_point() +
+  geom_point(aes(size = freq)) +
   geom_smooth(method = "lm", se = F) + 
   theme_minimal() + 
-  labs(x = "Password Length", y = "Online Crack Time (sec)", 
-       title = "Longer Passwords Take Longer to Crack",
+  labs(x = "Password Length", y = "Online Crack Time", 
+       title = "Longer Passwords Typically Take Longer",
+       subtitle = "crack time represented by numbers 1-10",
        caption = "Figure 3") +
     theme(
       plot.margin = margin(0, 1, 1, 0, "cm")
   )
 
 p4<- pass_more %>%
-  ggplot(aes(x = num_unique, y = true_val_strength, color = category, alpha = 0.05)) +
+  group_by(num_unique, true_val_strength, category) %>%
+  summarize(freq=n()) |>
+  ggplot(aes(x = num_unique, y = true_val_strength, color = category, size = freq)) +
   facet_wrap(~category, ncol = 3) + 
   geom_point() +  
   theme_minimal() + 
   scale_fill_viridis_d() +
   guides(color = "none", alpha = "none") + 
-  labs(x = "Number of Unique Characters", y = "Online Crack Time (sec)", 
-       title = "Unique Characters Change Crack Time", 
+  labs(x = "Number of Unique Characters", y = "Online Crack Time", 
+       title = "Unique Characters Tend to Increase Time", 
        subtitle = "Grouped by Category",
        caption = "Figure 4") +
     theme(
       plot.margin = margin(0, 1, 0, 0, "cm")
   )
 
-
 grid.arrange(p1, p3, p2, p4, ncol = 2, nrow = 2)
-
-# pass_more |>
-#   filter(true_val < 100000000) %>%
-#   ggplot(aes(x = pass_length, y = true_val)) +
-#   geom_point() +
-#   geom_smooth(method = "lm", se = F) + 
-#   theme_minimal() + 
-#   labs(x = "Password Length", y = "Online Crack Time (sec)", 
-#        title = "Fig 3: Do Longer Passwords Take Longer to Crack?")
-# 
-# pass_more %>%
-#   ggplot(aes(x = num_unique, y = true_val, color = category, alpha = 0.05)) +
-#   facet_wrap(~category) + 
-#   geom_point() +  
-#   theme_minimal() + 
-#   scale_fill_viridis_d() +
-#   guides(color = "none", alpha = "none") + 
-#   labs(x = "Number of Unique Characters", y = "Online Crack Time (sec)", 
-#        title = "Fig 4: How Do Unique Characters Change Crack Time?", 
-#        subtitle = "Grouped by Category")
-
-# pass_more %>%
-#  filter(true_val < 100000000) %>%
-#  ggplot(aes(x = num_unique, y = true_val, color = category, alpha = 0.05)) +
-#  facet_wrap(~category) + 
-#  geom_point() +  
-#  theme_minimal() + 
-#  scale_fill_viridis_d() +
-#  guides(color = "none", alpha = "none") + 
-#  labs(x = "Number of Unique Terms", y = "Online Crack Time (sec)", 
-#       title = "Fig 4: How Do Unique Characters Change Crack Time?", 
-#       subtitle = "Grouped by Category")
-
-# pass_more %>%
-#   summarize(mean(strength))
-# 
-# pass_more %>%
-#   summarize(mean(true_val))
-# 
-# pass_more %>%
-#   summarize(mean(num_digits))
-# 
-# pass_more %>%
-#   summarize(mean(num_letters))
-# 
-# pass_more %>%
-#   summarize(mean(num_unique))
-# 
-# pass_more %>%
-#   summarize(mean(num_vowels))
-# 
-# pass_more %>%
-#   summarize(mean(pass_length))
 ```
 
 \pagebreak
 
-Given our prior knowledge of what makes passwords stronger, we chose to focus our exploratory data analysis on the predictors password length and number of unique characters, along with their relationships with other variables in the dataset.
+Figure 1 demonstrates that there appears to be a positive relationship between password length and the strength variable based on the line of best fit. We can also see this from the data themselves based on how the size of the points change as strength increases. For passwords of length 6, 7, and 8, most passwords have strengths of above 5. For passwords of length 4 and 5, there are some passwords with strengths above 5, but there appear to be a similar number of passwords with these lengths with strengths below 5. This graph also helps visualize the composition of the data itself. The large size of several points associated with password length 6 indicates that, by far, most passwords in this dataset have length 6. 
 
-Figure 1 demonstrates that there appears to be a positive relationship between password length and the strength variable. The line of best fit shows that as password length increases, the strength of the password also tends to increase. We can also see this from the data themselves based on how the size of the points change as strength increases. For passwords of length 6, 7, and 8, most passwords have strengths of above 5. For passwords of length 4 and 5, there are some passwords with strengths above 5, but there appear to be a similar number of passwords with these lengths with strengths below 5, as well. This graph also helps visualize the composition of the data itself. The large size of several points associated with password length 6 indicates that, by far, most passwords in this dataset have length 6. Passwords of length 7 appear to be the next-most frequent, passwords of length 4, 5, and 8 appear to be about equally frequent, and passwords of length 9 are very infrequent. It is helpful to understand for the following data analysis that our sample size of long passwords is very small, which may limit the conclusions we can draw for that group.
+Figure 2 demonstrates that the number of unique characters appears to have a positive relationship with password strength. This relationship holds for all categories, except simple-alphanumeric. Although there appears to be a positive relationship between number of unique terms and password strengths for some passwords in this category, the horizontal line in this plot also shows that some passwords with varying numbers of unique terms have the same password strength. Additionally, the size of the points in the plot demonstrates that some categories of passwords were more popular in our data, especially name, cool-macho, fluffy, and sport.
 
-Figure 2 demonstrates that the number of unique characters appears to have a positive relationship with password strength. Within each password category, as the number of unique characters increases, the strength of the password also tends to increase. This relationship holds for all categories, except simple-alphanumeric. Although there appears to be a positive relationship between number of unique terms and password strengths for some passwords in this category, the horizontal line in this plot also shows that some passwords with varying numbers of unique terms have the same password strength. Additionally, the size of the points in the plot demonstrates that some categories of passwords were more popular in our data, especially name, cool-macho, fluffy, and sport.
+Figure 3 shows a positive relationship between password length and online crack time (`true_val_strength`), as demonstrated by the positive slope of the line of best fit. In general, longer passwords take longer to crack, and the vast majority of passwords with online crack time categories of 9 or above are 6 characters or longer. Looking at the distribution of our data, it appears that there should be a stronger positive relationship between password between password length and online crack time, but the outlier at length 9 reduces the slope of our line of best fit. The passwords with length 9 and `true_val_strength` of 1 are really the only deviation from the trend that length increases strength.  
 
-Figure 3 shows a positive relationship between password length and online crack time, as demonstrated by the positive slope of the line of best fit. To create this visualization, we excluded passwords with online crack times of above 10\^{8} seconds, since this expanded the visualization and made individual points more difficult to visualize. Interestingly, only passwords of length 8 had online crack times above 10\^{8} seconds, which seems to confirm the trend that longer passwords have higher strength scores.
-
-Figure 4 demonstrates that there appears to be a positive relationship between number of unique terms and online crack time. Although the data is squished at the top and bottom of the graph, making individual points difficult to visualize, the transparency of the points allows us to visualize their density. As the number of unique terms increases, the online crack time remains similar for many passwords. However, those passwords with the greatest online crack seconds (\> 10\^{8}) are typically those with at least 5 characters. There are, however, some exceptions with some passwords with few unique characters in the simple-alphanumeric and food categories still acheiving high online crack times.
-
-To better understand our data, we also calculated summary statistics to determine which kinds of passwords were the most common. For our data, the average number of digits in a password are 0.464, the average number of letters is 5.718, the average number of unique characters is 5.192, the average number of vowels is 2.08, and the average password length is 6.181. In general, the most popular passwords in the data leaks (the source of our data) used all unique letters and rarely used numbers.
+Figure 4 demonstrates that there appears to be a positive relationship between number of unique characters and online crack time. However, whether this trend holds differs by password category. The passwords in the food, nerdy-pop, and sport categories are clustered around high online crack times (represented by values 1-10) and do not appear to have any clear pattern. For passwords in the alphanumeric category, the groups of points in the plot that look like two parallel lines with positive slopes are consistent with the general trend of positive relationship between number of unqiue characters and online crack time. However, many passwords with 2 or less unique characters have high online crack times, demonstrated by the vertical line at the left of the plot, and one point with 9 unique characters has a very low online crack time. 
 
 # Methodology
 
@@ -275,53 +198,19 @@ In our analysis, we treat our two outcome variables, strength and online crack t
 
 The strength variable is a number 1-10, in order of increasing password strength, making ordinal a good fit. The strength variable meets the ordinal assumption of proportional odds, since it is reasonable to assume that one-unit changes in each predictor have the same conditional relationship with being in each strength category. For example, the strength variable is calculated in part based on password length, and each one character increase in password length has the same conditional relationship with being in each strength category.
 
-Online crack time
+*add to this* 
 
-Based on our research and prior knowledge, the variables we believe will be important to include are `pass_length`, `num_digits`, `num_unique`, and XX...
+In terms of our outcome variables, we excluded `offline_crack_sec` becuase it is just a merely transformation of `online_crack_sec`. In terms of our predictors, we focused on pass_length, num_digits, num_letters, and num_unique variables. We excluded the rank and rank_alt variables because our research question explores what characteristics of passwords make them stronger, and their popularity in these data leaks did not have to do with their actual composition and is likely not representative of how popular these passwords are on the whole. We excluded the password variable, since the actual text of the password could not be used as a predictor--the composition of the password is encompassed in our num_digits, num_letters, num_unique, and pass_length variables. We did not end up using `num_letters` in our model because the ordinal model could not handle including more than 4 variables given that our dataset only had 500 observations. We reasoned that this should not affect our analysis, since the number of letters is correlated with the number of digits (which we did include). The number of letters can be derived from the number of digits, since all passwords in our dataset included either letters, digits, or some combination of both--no passwords included special characters. 
 
-We treat strength as an ordinal variable...
-
-*- do we think category is important?* - since online cracking is partially done by guessing common passwords...
-
-```{r methods, message = F, warning = F, echo=FALSE}
-# 
-# y1 <- pass_more$strength
-# x1 <- model.matrix(strength ~ . - password - true_val - offline_crack_sec - rank,
-#             data = pass_more) 
-# 
-# y2 <- pass_more$true_val
-# x2 <- model.matrix(true_val ~ . - password - offline_crack_sec - strength - rank - true_val_strength,
-#             data = pass_more) 
-# 
-# y3 <- pass_more$true_val_strength
-# x3 <- model.matrix(true_val_strength ~ . - password - offline_crack_sec - strength - rank - true_val_strength - true_val,
-#             data = pass_more) 
-# 
-# m_lasso_strength <- cv.glmnet(x1, y1, alpha = 1)
-# best_lambda <- m_lasso_strength$lambda.min
-# best_lambda
-# m_best <- glmnet(x1, y1, alpha = 1, lambda = best_lambda)
-# m_best$beta
-# 
-# m_lasso_true <- cv.glmnet(x2, y2, alpha = 1)
-# best_lambda <- m_lasso_true$lambda.min
-# best_lambda
-# m_best <- glmnet(x2, y2, alpha = 1, lambda = best_lambda)
-# m_best$beta
-# 
-# m_lasso_true_strength <- cv.glmnet(x3, y3, alpha = 1)
-# best_lambda <- m_lasso_true_strength$lambda.min
-# best_lambda
-# m_best <- glmnet(x3, y3, alpha = 1, lambda = best_lambda)
-# m_best$beta
-
-```
+Additionally, based on our research and prior knowledge, we believed it was reasonable to focus on password length, number of unique characters, number of digits, and category as the most important predictors of password strength. Longer passwords with more varied compositions (unique characters and digits) are typically harder to guess because that increases the options for what the password might look like. Category may also be an important indicator of strength when, instead of using brute force attacks, the person or program guesses the most common passwords--passwords that fall into certain categories may be more common and thus easier to crack.  
 
 ```{r methods-ordinal,  message = F, warning = F, echo=FALSE}
-m1 <- polr(factor(strength) ~ . - password - true_val - true_val_strength - offline_crack_sec - rank - num_letters - num_vowels, data = pass_more)
-summary(m1)
+# m1 <- polr(factor(strength) ~ . - password - true_val - true_val_strength - offline_crack_sec - rank - num_letters, data = pass_more)
+# summary(m1)
 
-m2 <- polr(factor(true_val_strength) ~ . - password - num_vowels - num_letters - offline_crack_sec - strength - rank - true_val, data = pass_more)
+# the above isn't running... 
+
+m2 <- polr(factor(true_val_strength) ~ . - password - num_letters - offline_crack_sec - strength - rank - true_val, data = pass_more)
 summary(m2)
 
 pass_log_strong <- pass_more |>
@@ -334,24 +223,20 @@ pass_log_true_strong <- pass_more |>
     true_strong = ifelse(true_val_strength >= 8, 1, 0)
   )
 
-strong_mod <- glm(strong ~ . - password - num_vowels - num_letters - offline_crack_sec - strength - rank - true_val - true_val_strength,
+strong_mod <- glm(strong ~ . - password - num_letters - offline_crack_sec - strength - rank - true_val - true_val_strength,
   data = pass_log_strong,
   family = "binomial"
 )
 
 tidy(strong_mod)
 
-true_strong_mod <- glm(true_strong ~ . - password - num_vowels - num_letters - offline_crack_sec - strength - rank - true_val - true_val_strength,
+true_strong_mod <- glm(true_strong ~ . - password - num_letters - offline_crack_sec - strength - rank - true_val - true_val_strength,
   data = pass_log_true_strong,
   family = "binomial"
 )
 
 tidy(true_strong_mod)
-
-
 ```
-
-*to-dos* - LASSO for online crack sec (and offline if we decide to do that) - hypothesis test for idk yet - should we plug in our LASSO variables into a regression (e.g. ordinal for password strength?, OLS for crack time?) or should we just use the LASSO coefficients themselves - would it be too much to see whether these strong passwords are the most common?
 
 # Results
 
@@ -363,4 +248,4 @@ In terms of the research question. In terms of limitations, to reiterate, this d
 
 External research: https://www.keepersecurity.com/blog/2022/09/14/why-is-password-security-important/ https://www.bleepingcomputer.com/news/security/the-benefits-of-making-password-strength-more-transparent/ https://www.ibm.com/downloads/cas/3R8N1DZJ
 
-Data source: https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-01-14 https://docs.google.com/spreadsheets/d/1cz7TDhm0ebVpySqbTvrHrD3WpxeyE4hLZtifWSnoNTQ/edit#gid=21
+Data source: https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-14/readme.md
