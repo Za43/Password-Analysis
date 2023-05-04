@@ -2,7 +2,7 @@
 title: "How Do Password Characteristics Affect Password Strength?"
 author: "Zaid Muqsit and Zoe Spicer"
 format: pdf
-geometry: margin=1.8cm
+geometry: margin=1.7cm
 editor_options: 
   chunk_output_type: console
 ---
@@ -50,7 +50,7 @@ pass_more <- pass |>
          time_unit = NULL,
          num_digits = str_count(password, "[0-9]"),
          num_letters = str_count(password, "[a-z]"),
-         num_vowels = str_count(password, "[a,e,i,o,u]"),
+         # num_vowels = str_count(password, "[a,e,i,o,u]"),
          num_unique = sapply(strsplit(password, ""), 
                              function(x) length(unique(x)))) |>
   filter(!is.na(rank)) |>
