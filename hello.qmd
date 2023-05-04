@@ -172,8 +172,7 @@ p2 <- pass_more %>%
   )
 
 p3<- pass_more |>
-  filter(true_val < 100000000) %>%
-  ggplot(aes(x = pass_length, y = true_val)) +
+  ggplot(aes(x = pass_length, y = true_val_strength)) +
   geom_point() +
   geom_smooth(method = "lm", se = F) + 
   theme_minimal() + 
@@ -185,7 +184,7 @@ p3<- pass_more |>
   )
 
 p4<- pass_more %>%
-  ggplot(aes(x = num_unique, y = true_val, color = category, alpha = 0.05)) +
+  ggplot(aes(x = num_unique, y = true_val_strength, color = category, alpha = 0.05)) +
   facet_wrap(~category, ncol = 3) + 
   geom_point() +  
   theme_minimal() + 
@@ -268,11 +267,11 @@ Figure 3 shows a positive relationship between password length and online crack 
 
 Figure 4 demonstrates that there appears to be a positive relationship between number of unique terms and online crack time. Although the data is squished at the top and bottom of the graph, making individual points difficult to visualize, the transparency of the points allows us to visualize their density. As the number of unique terms increases, the online crack time remains similar for many passwords. However, those passwords with the greatest online crack seconds (\> 10\^{8}) are typically those with at least 5 characters. There are, however, some exceptions with some passwords with few unique characters in the simple-alphanumeric and food categories still acheiving high online crack times.
 
-To better understand our data, we also calculated summary statistics to determine which kinds of passwords were the most common. For our data, the average number of digits in a password are 0.464, the average nubmer of letters is 5.718, the average number of unique characters is 5.192, the average number of vowels is 2.08, and the average password length is 6.181. In general, the most popular passwords in the data leaks (the source of our data) used all unique letters and rarely used numbers.
+To better understand our data, we also calculated summary statistics to determine which kinds of passwords were the most common. For our data, the average number of digits in a password are 0.464, the average number of letters is 5.718, the average number of unique characters is 5.192, the average number of vowels is 2.08, and the average password length is 6.181. In general, the most popular passwords in the data leaks (the source of our data) used all unique letters and rarely used numbers.
 
 # Methodology
 
-In our analysis, we treat our two outcome variables, strength and online crack time, as ordinal outcomes. *do we tho*
+In our analysis, we treat our two outcome variables, strength and online crack time, as ordinal outcomes.
 
 The strength variable is a number 1-10, in order of increasing password strength, making ordinal a good fit. The strength variable meets the ordinal assumption of proportional odds, since it is reasonable to assume that one-unit changes in each predictor have the same conditional relationship with being in each strength category. For example, the strength variable is calculated in part based on password length, and each one character increase in password length has the same conditional relationship with being in each strength category.
 
@@ -284,37 +283,37 @@ We treat strength as an ordinal variable...
 
 *- do we think category is important?* - since online cracking is partially done by guessing common passwords...
 
-```{r methods, message = F, warning = F}
-
-y1 <- pass_more$strength
-x1 <- model.matrix(strength ~ . - password - true_val - offline_crack_sec - rank,
-            data = pass_more) 
-
-y2 <- pass_more$true_val
-x2 <- model.matrix(true_val ~ . - password - offline_crack_sec - strength - rank - true_val_strength,
-            data = pass_more) 
-
-y3 <- pass_more$true_val_strength
-x3 <- model.matrix(true_val_strength ~ . - password - offline_crack_sec - strength - rank - true_val_strength - true_val,
-            data = pass_more) 
-
-m_lasso_strength <- cv.glmnet(x1, y1, alpha = 1)
-best_lambda <- m_lasso_strength$lambda.min
-best_lambda
-m_best <- glmnet(x1, y1, alpha = 1, lambda = best_lambda)
-m_best$beta
-
-m_lasso_true <- cv.glmnet(x2, y2, alpha = 1)
-best_lambda <- m_lasso_true$lambda.min
-best_lambda
-m_best <- glmnet(x2, y2, alpha = 1, lambda = best_lambda)
-m_best$beta
-
-m_lasso_true_strength <- cv.glmnet(x3, y3, alpha = 1)
-best_lambda <- m_lasso_true_strength$lambda.min
-best_lambda
-m_best <- glmnet(x3, y3, alpha = 1, lambda = best_lambda)
-m_best$beta
+```{r methods, message = F, warning = F, echo=FALSE}
+# 
+# y1 <- pass_more$strength
+# x1 <- model.matrix(strength ~ . - password - true_val - offline_crack_sec - rank,
+#             data = pass_more) 
+# 
+# y2 <- pass_more$true_val
+# x2 <- model.matrix(true_val ~ . - password - offline_crack_sec - strength - rank - true_val_strength,
+#             data = pass_more) 
+# 
+# y3 <- pass_more$true_val_strength
+# x3 <- model.matrix(true_val_strength ~ . - password - offline_crack_sec - strength - rank - true_val_strength - true_val,
+#             data = pass_more) 
+# 
+# m_lasso_strength <- cv.glmnet(x1, y1, alpha = 1)
+# best_lambda <- m_lasso_strength$lambda.min
+# best_lambda
+# m_best <- glmnet(x1, y1, alpha = 1, lambda = best_lambda)
+# m_best$beta
+# 
+# m_lasso_true <- cv.glmnet(x2, y2, alpha = 1)
+# best_lambda <- m_lasso_true$lambda.min
+# best_lambda
+# m_best <- glmnet(x2, y2, alpha = 1, lambda = best_lambda)
+# m_best$beta
+# 
+# m_lasso_true_strength <- cv.glmnet(x3, y3, alpha = 1)
+# best_lambda <- m_lasso_true_strength$lambda.min
+# best_lambda
+# m_best <- glmnet(x3, y3, alpha = 1, lambda = best_lambda)
+# m_best$beta
 
 ```
 
@@ -324,6 +323,32 @@ summary(m1)
 
 m2 <- polr(factor(true_val_strength) ~ . - password - num_vowels - num_letters - offline_crack_sec - strength - rank - true_val, data = pass_more)
 summary(m2)
+
+pass_log_strong <- pass_more |>
+  mutate(
+    strong = ifelse(strength >= 8, 1, 0)
+  )
+
+pass_log_true_strong <- pass_more |>
+  mutate(
+    true_strong = ifelse(true_val_strength >= 8, 1, 0)
+  )
+
+strong_mod <- glm(strong ~ . - password - num_vowels - num_letters - offline_crack_sec - strength - rank - true_val - true_val_strength,
+  data = pass_log_strong,
+  family = "binomial"
+)
+
+tidy(strong_mod)
+
+true_strong_mod <- glm(true_strong ~ . - password - num_vowels - num_letters - offline_crack_sec - strength - rank - true_val - true_val_strength,
+  data = pass_log_true_strong,
+  family = "binomial"
+)
+
+tidy(true_strong_mod)
+
+
 ```
 
 *to-dos* - LASSO for online crack sec (and offline if we decide to do that) - hypothesis test for idk yet - should we plug in our LASSO variables into a regression (e.g. ordinal for password strength?, OLS for crack time?) or should we just use the LASSO coefficients themselves - would it be too much to see whether these strong passwords are the most common?
