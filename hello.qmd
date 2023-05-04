@@ -317,12 +317,14 @@ best_lambda
 m_best <- glmnet(x3, y3, alpha = 1, lambda = best_lambda)
 m_best$beta
 
+```
+
+```{r methods-ordinal,  message = F, warning = F, echo=FALSE}
 m1 <- polr(factor(strength) ~ . - password - true_val - true_val_strength - offline_crack_sec - rank - num_letters - num_vowels, data = pass_more)
 summary(m1)
 
 m2 <- polr(factor(true_val_strength) ~ . - password - num_vowels - num_letters - offline_crack_sec - strength - rank - true_val, data = pass_more)
 summary(m2)
-
 ```
 
 *to-dos* - LASSO for online crack sec (and offline if we decide to do that) - hypothesis test for idk yet - should we plug in our LASSO variables into a regression (e.g. ordinal for password strength?, OLS for crack time?) or should we just use the LASSO coefficients themselves - would it be too much to see whether these strong passwords are the most common?
