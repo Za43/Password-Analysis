@@ -206,8 +206,6 @@ In terms of our outcome variables, we excluded `offline_crack_sec` becuase it is
 Additionally, based on our research and prior knowledge, we believed it was reasonable to focus on password length, number of unique characters, number of digits, and category as the most important predictors of password strength. Longer passwords with more varied compositions (unique characters and digits) are typically harder to guess because that increases the options for what the password might look like. Category may also be an important indicator of strength when, instead of using brute force attacks, the person or program guesses the most common passwords--passwords that fall into certain categories may be more common and thus easier to crack.
 
 ```{r methods-ordinal,  message = F, warning = F, echo=FALSE}
-
-
 m1 <- polr(factor(strength) ~ . - password - true_val - true_val_strength - offline_crack_sec - rank - num_letters - rank_alt - font_size, data = pass_more)
 summary(m1)
 
@@ -238,6 +236,47 @@ true_strong_mod <- glm(true_strong ~ . - password - num_letters - offline_crack_
 )
 
 tidy(true_strong_mod)
+```
+
+```{r evaluate-methods, message = F, warning = F, echo=FALSE}
+#| layout-ncol: 2
+
+strong_mod_aug <- augment(strong_mod)
+
+strong_mod_aug <- strong_mod_aug %>% 
+  mutate(prob = exp(.fitted)/(1 + exp(.fitted)),
+         pred_strong = ifelse(prob > 0.5, "Strong", "Not Strong")) %>% 
+  dplyr::select(.fitted, prob, pred_strong, strong)
+
+true_strong_mod_aug <- augment(true_strong_mod)
+
+true_strong_mod_aug <- true_strong_mod_aug %>% 
+  mutate(prob = exp(.fitted)/(1 + exp(.fitted)),
+         pred_true_strong = ifelse(prob > 0.5, "Strong", "Not Strong")) %>% 
+  dplyr::select(.fitted, prob, pred_true_strong, true_strong)
+
+knitr::kable(table(strong_mod_aug$pred_strong, strong_mod_aug$strong), caption = "Predictions for Strength")
+knitr::kable(table(true_strong_mod_aug$pred_true_strong, true_strong_mod_aug$true_strong), caption = "Predictions for True Strength")
+```
+
+```{r auc, message = F, warning = F, echo=FALSE}
+#| layout-ncol: 2
+
+strong_auc <- strong_mod_aug %>% 
+  roc_auc(
+    truth = as.factor(strong),
+    prob, 
+    event_level = "second"
+  )
+true_strong_auc <- true_strong_mod_aug %>% 
+  roc_auc(
+    truth = as.factor(true_strong),
+    prob, 
+    event_level = "second"
+  ) 
+
+knitr::kable(strong_auc, caption = "AUC for ROC of Strength")
+knitr::kable(true_strong_auc, caption = "AUC for ROC of True Strength")
 ```
 
 # Results
