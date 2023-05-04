@@ -80,7 +80,7 @@ Data source: https://github.com/rfordatascience/tidytuesday/tree/master/data/202
 ## Data Description
 
 | Variable Name     | Type        | Description                                                      |
-|-----------------|-----------------|--------------------------------------|
+|-------------------|-------------|------------------------------------------------------------------|
 | rank              | numeric     | Popularity in their database of released passwords               |
 | password          | character   | Actual text of password                                          |
 | category          | categorical | Classification of type of password                               |
