@@ -45,7 +45,7 @@ pass_more <- pass |>
                                     ifelse(true_val == 321408, 9, 
                                     ifelse(true_val == 8268480, 10, 11)))))))))),
          category = ifelse(category == "simple-alphanumeric", "alphanumeric", category),
-         true_val = jitter(true_val),
+         #true_val = jitter(true_val),
          pass_length = nchar(password),
          font_size = NULL,
          value = NULL,
