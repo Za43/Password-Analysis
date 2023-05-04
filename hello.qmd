@@ -80,7 +80,7 @@ Data source: https://github.com/rfordatascience/tidytuesday/tree/master/data/202
 ## Data Description
 
 | Variable Name     | Type        | Description                                                      |
-|-------------------|-------------|------------------------------------------------------------------|
+|---------------|---------------|-------------------------------------------|
 | rank              | numeric     | Popularity in their database of released passwords               |
 | password          | character   | Actual text of password                                          |
 | category          | categorical | Classification of type of password                               |
@@ -101,7 +101,48 @@ Finally, we added five new variables: pass_length, num_digits, num_letters, num_
 
 ## Exploratory Data Analysis
 
-```{r EDA, message = F, warning = F, echo=FALSE, fig.height=10, fig.width=8}
+### Summary Stats Table:
+
+```{r EDA, message = F, warning = F, echo=FALSE}
+
+#do we have to show these calculations
+
+#st(pass_more)
+pass_more |>
+  dplyr::select(-rank) |>
+st(out = "return",
+   summ = c( 'mean(x)', 'median(x)', 'sd(x)', 'min(x)', 'max(x)'))
+
+# pass_more %>%
+#   summarize(mean(strengh))
+# 
+# pass_more %>%
+#   summarize(mean(true_val))
+# 
+# pass_more %>%
+#   summarize(mean(num_digits))
+# 
+# pass_more %>%
+#   summarize(mean(num_letters))
+# 
+# pass_more %>%
+#   summarize(mean(num_unique))
+# 
+# pass_more %>%
+#   summarize(mean(num_vowels))
+# 
+# pass_more %>%
+#   summarize(mean(pass_length))
+```
+
+### Plots:
+
+```{r EDA-2, message = F, warning = F, echo=FALSE, fig.height=10, fig.width=8}
+# pass_more |>
+#   dplyr::select(-rank) |>
+# st(out = "return", 
+#    summ = c( 'mean(x)', 'median(x)', 'sd(x)', 'min(x)', 'max(x)'))
+
 p1 <- pass_more %>%
   group_by(strength, pass_length) %>%
   summarize(freq = n()) |>
@@ -218,39 +259,7 @@ grid.arrange(p1, p3, p2, p4, ncol = 2, nrow = 2)
 #   summarize(mean(pass_length))
 ```
 
-```{r EDA-2, message = F, warning = F, echo=FALSE}
-
-#do we have to show these calculations
-
-#st(pass_more)
-pass_more |>
-  dplyr::select(-rank) |>
-st(out = "return", 
-   summ = c( 'mean(x)', 'median(x)', 'sd(x)', 'min(x)', 'max(x)'))
-
-# pass_more %>%
-#   summarize(mean(strengh))
-# 
-# pass_more %>%
-#   summarize(mean(true_val))
-# 
-# pass_more %>%
-#   summarize(mean(num_digits))
-# 
-# pass_more %>%
-#   summarize(mean(num_letters))
-# 
-# pass_more %>%
-#   summarize(mean(num_unique))
-# 
-# pass_more %>%
-#   summarize(mean(num_vowels))
-# 
-# pass_more %>%
-#   summarize(mean(pass_length))
-```
-
-Given our prior knowledge of what makes passwords stronger, we chose to focus our exploratory data analysis on the predictors password length and number of unique characters, along with their relationships with other variables in the dataset.
+\pagebreak Given our prior knowledge of what makes passwords stronger, we chose to focus our exploratory data analysis on the predictors password length and number of unique characters, along with their relationships with other variables in the dataset.
 
 Figure 1 demonstrates that there appears to be a positive relationship between password length and the strength variable. The line of best fit shows that as password length increases, the strength of the password also tends to increase. We can also see this from the data themselves based on how the size of the points change as strength increases. For passwords of length 6, 7, and 8, most passwords have strengths of above 5. For passwords of length 4 and 5, there are some passwords with strengths above 5, but there appear to be a similar number of passwords with these lengths with strengths below 5, as well. This graph also helps visualize the composition of the data itself. The large size of several points associated with password length 6 indicates that, by far, most passwords in this dataset have length 6. Passwords of length 7 appear to be the next-most frequent, passwords of length 4, 5, and 8 appear to be about equally frequent, and passwords of length 9 are very infrequent. It is helpful to understand for the following data analysis that our sample size of long passwords is very small, which may limit the conclusions we can draw for that group.
 
