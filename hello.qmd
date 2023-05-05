@@ -1,11 +1,12 @@
 ---
 title: "How Do Password Characteristics Affect Password Strength?"
 author: "Zaid Muqsit and Zoe Spicer"
+geometry: "left=1.8cm,right=1.8cm,top=1.8cm,bottom=2cm"
 format: pdf
-geometry: margin=1.7cm
 editor_options: 
   chunk_output_type: console
 ---
+\vspace{-2cm}
 
 ```{r load-data, message = F, warning = F, echo=FALSE}
 library(tidyverse) 
