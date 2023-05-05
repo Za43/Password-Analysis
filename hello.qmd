@@ -202,7 +202,7 @@ In terms of our outcome variables, we excluded `offline_crack_sec` because it is
 
 In our analysis, we run two ordinal regressions, one on strength, and one on online crack time. The strength variable is an ordered number 1-10, in order of increasing password strength, making an ordinal model the best fit. The strength variable meets the ordinal assumption of proportional odds, since it is reasonable to assume that one-unit changes in each predictor have the same conditional relationship with being in each strength category. For example, the strength variable is calculated in part based on the number of unique characters, and each one-unit increase in the number of unique characters has the same conditional relationship with being in each strength category. Ordinal regression is also a good fit for the `true_val_strength` variable, which is ordered in increasing order of time to crack the password. The variable also meets the proportional odds assumption, as it is reasonable to assume that one-unit changes in each predictor have the same conditional relationship with being in each true_val_strength category, by similar reasoning as the strength variable.
 
-We also did logistic regressions for both these response variables, where they each had a threshold of a value of 8 or above for being considered "strong". This allows us to bolster our ordinal models to see if the predictor variables they pick are similar. The assumption to meet would be linearity. To prove linearity is met, we plot the continuous predictors with the odds, and see that all plots are linear below.
+We also did logistic regressions for both these response variables, where they each had a threshold of a value of 8 or above for being considered "strong". This allows us to bolster our ordinal models to see if the predictor variables they pick are similar. The assumption to meet would be linearity and independence. In terms of linearity, we would show that our continuous variables are roughly linearly related to the log odds of the response. Given the limited values of our continuous variables, and limited observations, it was not possible to create such plots as the `num_groups` parameter would have to be set to two, which would make the plot irrelevant at that point, so for the logistic part of our analysis, we assume linearity. Additionally, for independence the observations shouldn't be related to each other because people chose their passwords based on what they wanted and not what other people have said. There are no groupings so it is hard to see how one observation would inform us about another.
 
 ```{r methods-log-plots, message = F, warning = F, echo=FALSE}
 
@@ -234,6 +234,8 @@ pass_log_true_strong <- pass_more |>
 
 \footnotesize
 
+Ordinal Model for Strength and True Val Strength Respectively:
+
 ```{r methods-ordinal,  message = F, warning = F, echo=FALSE}
 
 
@@ -255,6 +257,8 @@ Start = grep("Coefficients:", sum2)
 End   = grep("num_unique", sum2)
 print(as.data.frame(sum2[Start:End]), row.names=FALSE, quote = FALSE)
 ```
+
+Logistic Model for Strength and True Value Strength Respectively
 
 ```{r logistic, message = F, warning = F, echo=FALSE}
 
