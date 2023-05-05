@@ -69,7 +69,7 @@ pass_ordered$category <- with(pass_ordered,
 
 ## Research Question and Motivation
 
-In our increasingly technology-oriented world, data security is a pressing and essential topic. As cybercriminals' hacking tools have improved, data leaks at major companies such as Yahoo, Facebook, LinkedIn, Mariott International, Adobe, Bank of America, British Airways, and CVS have compromised billions of users' personal information. In 2022, IBM found that the average data breach in the U.S. cost companies an average of \$9.44 million in lost business, crisis management efforts, and ransom payments. Data breaches can also allow hackers to access users' personal information such as names, addresses, credit card details, and Social Security numbers, which can be used for financial fraud or identity theft. One critical aspect of data security is password strength, which can reduce the risk of cybercriminals guessing users' passwords and acesssing personal information. Given our interset in datasecurity and the topcality of password strength, we wanted to explore password data for our project.
+In our increasingly technology-oriented world, data security is a pressing and essential topic. As cybercriminals' hacking tools have improved, data leaks at major companies such as Yahoo, Facebook, LinkedIn, Marriott International, Adobe, Bank of America, British Airways, and CVS have compromised billions of users' personal information. In 2022, IBM found that the average data breach in the U.S. cost companies an average of \$9.44 million in lost business, crisis management efforts, and ransom payments. Data breaches can also allow hackers to access users' personal information such as names, addresses, credit card details, and Social Security numbers, which can be used for financial fraud or identity theft. One critical aspect of data security is password strength, which can reduce the risk of cybercriminals guessing users' passwords and accessing personal information. Given our interest in datasecurity and the topicality of password strength, we wanted to explore password data for our project.
 
 Our research question is: How do various password characteristics affect password strength? We measure password strength in two ways: "strength" (which is calculated by an algorithm based on the password's length and complexity and is comparative to the generally bad passwords in the dataset) and the time the password takes to crack by online guessing (a brute force attack that guesses all possible combinations).
 
@@ -321,7 +321,7 @@ knitr::kable(true_strong_auc, caption = "AUC for ROC of True Strength")
 
 ## Ordinal Models
 
-To reiterate, the main models in our analysis are the ordinal ones. The logistic models are only present to bolster our findings. Depending on one's definition of strength, they can look at either of the two equations. If it involves a more holistic look at all the factors that hackers could use to steal passwords, the first model is a good fit. If the definition involves mostly computerized, brute forced look, then the second one may be more applicable. 
+To reiterate, the main models in our analysis are the ordinal ones. The logistic models are only present to bolster our findings. Depending on one's definition of strength, they can look at either of the two equations. If it involves a more holistic look at all the factors that hackers could use to steal passwords, the first model is a good fit. If the definition involves mostly computerized, brute forced look, then the second one may be more applicable.
 
 First Ordinal Model: $logit(strength) = -0.5422*categoryAnimal_i + -0.8514*categoryCoolMacho_i + -0.8548*categoryFluffy_i + -3.0098*categoryFood_i + -0.6723*categoryName_i + -0.2455*categoryNerdyPop_i + -0.7074*categoryPasswordRelated_i + -1.5309*categoryRebelliousRude_i + -0.8894*categorySport_i + -0.3116*passLength + -1.1207*numDigits + 3.6946*numUnique$
 
@@ -363,10 +363,10 @@ To reiterate, this data holds the 500 most common passwords from a data leak, an
 
 External research:
 
-Alkhatib, Bayan. \"Why Is Password Security Important?\" *Keeper Security Blog - Cybersecurity News & Product Updates*, 27 Feb. 2023, https://www.keepersecurity.com/blog/2022/09/14/why-is-password-security-important/.
+Alkhatib, Bayan. "Why Is Password Security Important?" *Keeper Security Blog - Cybersecurity News & Product Updates*, 27 Feb. 2023, https://www.keepersecurity.com/blog/2022/09/14/why-is-password-security-important/.
 
-Specops. \"The Benefits of Making Password Strength More Transparent.\" *BleepingComputer*, BleepingComputer, 25 Jan. 2023, https://www.bleepingcomputer.com/news/security/the-benefits-of-making-password-strength-more-transparent/.
+Specops. "The Benefits of Making Password Strength More Transparent." *BleepingComputer*, BleepingComputer, 25 Jan. 2023, https://www.bleepingcomputer.com/news/security/the-benefits-of-making-password-strength-more-transparent/.
 
 Data source:
 
-Rfordatascience. \"Password Data.\" *GitHub*, https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-14/readme.md.
+Rfordatascience. "Password Data." *GitHub*, https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-14/readme.md.
