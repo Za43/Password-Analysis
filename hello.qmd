@@ -70,10 +70,6 @@ pass_ordered$category <- with(pass_ordered,
 ## Research Question and Motivation
 
 In our increasingly technology-oriented world, data security is a pressing and essential topic. As cybercriminals' hacking tools have improved, data leaks at major companies such as Yahoo, Facebook, LinkedIn, Mariott International, Adobe, Bank of America, British Airways, and CVS have compromised billions of users' personal information. In 2022, IBM found that the average data breach in the U.S. cost companies an average of \$9.44 million in lost business, crisis management efforts, and ransom payments. Data breaches can also allow hackers to access users' personal information such as names, addresses, credit card details, and Social Security numbers, which can be used for financial fraud or identity theft. One critical aspect of data security is password strength, which can reduce the risk of cybercriminals guessing users' passwords and acesssing personal information. Given our interset in datasecurity and the topcality of password strength, we wanted to explore password data for our project.
-<<<<<<< HEAD
-=======
-
->>>>>>> 7bf3cb25bb9ec5ca8e56a4830f20b8ce2fdba0e1
 
 Our research question is: How do various password characteristics affect password strength? We measure password strength in two ways: "strength" (which is calculated by an algorithm based on the password's length and complexity and is comparative to the generally bad passwords in the dataset) and the time the password takes to crack by online guessing (a brute force attack that guesses all possible combinations).
 
@@ -327,13 +323,9 @@ knitr::kable(true_strong_auc, caption = "AUC for ROC of True Strength")
 
 To reiterate, the main models in our analysis are the ordinal ones. The logistic models are only present to bolster our findings. Depending on one's definition of strength, they can look at either of the two equations. If it involves a more holistic look at all the factors that hackers could use to steal passwords, the first model is a good fit. If the definition involves mostly computerized, brute forced look, then the second one may be more applicable. 
 
-First Ordinal Model:
+First Ordinal Model: $logit(strength) = -0.5422*categoryAnimal_i + -0.8514*categoryCoolMacho_i + -0.8548*categoryFluffy_i + -3.0098*categoryFood_i + -0.6723*categoryName_i + -0.2455*categoryNerdyPop_i + -0.7074*categoryPasswordRelated_i + -1.5309*categoryRebelliousRude_i + -0.8894*categorySport_i + -0.3116*passLength + -1.1207*numDigits + 3.6946*numUnique$
 
-$logit(strength) = -0.5422*categoryAnimal_i + -0.8514*categoryCoolMacho_i + -0.8548*categoryFluffy_i + -3.0098*categoryFood_i + -0.6723*categoryName_i + -0.2455*categoryNerdyPop_i + -0.7074*categoryPasswordRelated_i + -1.5309*categoryRebelliousRude_i + -0.8894*categorySport_i + -0.3116*passLength + -1.1207*numDigits + 3.6946*numUnique$
-
-Second Ordinal Model:
-
-$logit(trueValueStrength) = -2.1008*categoryAnimal_i + -2.2598*categoryCoolMacho_i + -2.1499*categoryFluffy_i + -1.3163*categoryFood_i + -2.0787*categoryName_i + -0.8051*categoryNerdyPop_i + -2.5701*categoryPasswordRelated_i + 3.1858*categoryRebelliousRude_i + -1.7996*categorySport_i + 12.2155*passLength + -4.0217*numDigits + -0.1844*numUnique$
+Second Ordinal Model: $logit(trueValueStrength) = -2.1008*categoryAnimal_i + -2.2598*categoryCoolMacho_i + -2.1499*categoryFluffy_i + -1.3163*categoryFood_i + -2.0787*categoryName_i + -0.8051*categoryNerdyPop_i + -2.5701*categoryPasswordRelated_i + 3.1858*categoryRebelliousRude_i + -1.7996*categorySport_i + 12.2155*passLength + -4.0217*numDigits + -0.1844*numUnique$
 
 In our first ordinal model for `strength`, the predictors with the greatest impact on strength, as indicated by the magnitude of their slopes, are number of unique characters and being categorized as food-related. The number of digits also had a relatively high slope magnitude, and password length had a small slope magnitude. It may seem strange that `num_digits` and `password_length` have negative slopes. However, this is because our model controls for the number of unique characters: a unique additional digit or character (which would make the password longer) is predicted to increase the odds of being in the next-highest strength category, but if the additional digit or character is not unique, it is predicted to decrease those odds. The high-magnitude t-values associated with the number of digits, being in the food category, and especially the number of unique characters (t value of 17.147) suggest that these predictors have a meaningful relationship with password strength and are important to include in a model predicting strength.
 
@@ -351,7 +343,7 @@ Our null and alternative hypotheses for our OCT model are the same, except with 
 
 Our AUC for the strength logistic regression is 0.977. In content, the AUC means that the probability of a randomly selected "strong" password having a higher predicted probability of being classified as strong than that of a "weak" password is 0.977, which is very close to 1. This means our model is a very good fit for our data. Our model also appears to be a good fit based on its high positive predictive value, which is 0.933, and the negative predicted value of 0.969.
 
-Our AUC for the true_val logistic regression is 0.996. In content, the AUC means that the probability of a randomly selected "strong" password (here, referring to crack time category) having a higher predicted probability of being classified as strong than that of a "weak" password is 0.996. Our model also appears to be a good fit based on its high positive predictive value, which is 0.997, and the negative predicted value of 0.981.
+Our AUC for the true_val logistic regression is 0.996. In content, the AUC means that the probability of a randomly selected "strong" password (here, referring to crack time category) having a higher predicted probability of being classified as strong than that of a "weak" password is 0.996. Our model also appears to be a good fit based on its positive predictive value of 0.997 and its negative predicted value of 0.981.
 
 # Discussion
 
