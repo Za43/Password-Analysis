@@ -318,7 +318,6 @@ true_strong_auc <- true_strong_mod_aug %>%
 knitr::kable(strong_auc, caption = "AUC for ROC of Strength")
 knitr::kable(true_strong_auc, caption = "AUC for ROC of True Strength")
 ```
-
 \normalsize
 
 # Results
@@ -342,6 +341,25 @@ In terms of what the key coefficients from our model mean in context, the slope 
 Our second ordinal model shows the relationship between the same predictors and `true_val_strength`, which again represents an online crack time, represented by values 1-10. The predictors with the largest impact on strength, as indicated by the magnitude of their slopes are password length, number of digits, and being in the rebellious-rude category. The low magnitude slope for the number of unique characters makes sense in this model because if the computer is guessing every possible character every time, then uniqueness does not matter. The high-magnitude t-values associated with the number of digits (t value of -9.447) and password length (10.429) indicate that these predictors have a meaningful relationship with online crack time.
 
 In terms of what the key coefficients from our model mean in context, the slope for `categoryrebellious-rude` indicates that while controlling for all other predictors, our model predicts being in the rebellious-rude category to increase a password's odds of being in the next-highest strength category by 24.19 times. The slope for `pass_length` means that while controlling for all other predictors, as the password length increases by 1 character or digit, our model predicts the odds of being in the next-highest strength category to increase by 201,894.4 times.
+
+
+
+Our AUC for the strength logistic regression is 0.977. In content, the AUC means that the probability of a randomly selected “strong” password having a higher predicted probability of being classified as strong than that of a “weak” password is 0.977, which is very close to 1. This means our model is a very good fit for our data. Our model also appears to be a good fit based on its high positive predictive value, which is 0.933, and the negative predicted value of 0.969. 
+
+Our AUC for the true_val logistic regression is 0.996. In content, the AUC means that the probability of a randomly selected “strong” password (here, referring to crack time category) having a higher predicted probability of being classified as strong than that of a “weak” password is 0.996. This means our model is a very good fit for our data. Our model also appears to be a good fit based on its high positive predictive value, which is 0.997, and the negative predicted value of 0.981. 
+
+*write out generic hypothesis test?* 
+
+We use $\alpha = 0.05$ as our threshold for significance. 
+
+Based on our strength model output, our significant predictors (i.e. the predictors with p-valeus less than 0.05) are `num_digits` and `num_unique`. This means that we have evidence to suggest that these two variables have a relationship with the log_odds of a password being classified as high or low-strength.  
+
+In context, *interpret num_digits and num_unique* 
+
+Based on our model output for online crack time, our significant predictors are `num_digits` and pass_length`. We have evidence to suggest that these two variables have a relationship with the log_odds of a password being classified as high or low-strength.  
+
+In context, *interpret* 
+
 
 # Discussion
 
