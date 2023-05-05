@@ -18,6 +18,7 @@ library(leaps)
 library(gtsummary)
 library(MASS)
 library(glmnet)
+library(Stat2Data)
 library(caret)
 library(gridExtra)
 library(grid)
@@ -75,7 +76,7 @@ Our research question is: How do various password characteristics affect passwor
 ## Data Description
 
 | Variable Name     | Type        | Description                                                      |
-|-------------------|-------------|------------------------------------------------------------------|
+|------------------|------------------|------------------------------------|
 | rank              | numeric     | Popularity in their database of released passwords               |
 | password          | character   | Actual text of password                                          |
 | category          | categorical | Classification of type of password                               |
@@ -201,7 +202,35 @@ In terms of our outcome variables, we excluded `offline_crack_sec` because it is
 
 In our analysis, we run two ordinal regressions, one on strength, and one on online crack time. The strength variable is an ordered number 1-10, in order of increasing password strength, making an ordinal model the best fit. The strength variable meets the ordinal assumption of proportional odds, since it is reasonable to assume that one-unit changes in each predictor have the same conditional relationship with being in each strength category. For example, the strength variable is calculated in part based on the number of unique characters, and each one-unit increase in the number of unique characters has the same conditional relationship with being in each strength category. Ordinal regression is also a good fit for the `true_val_strength` variable, which is ordered in increasing order of time to crack the password. The variable also meets the proportional odds assumption, as it is reasonable to assume that one-unit changes in each predictor have the same conditional relationship with being in each true_val_strength category, by similar reasoning as the strength variable.
 
-We also did logistic regressions for both these response variables, where they each had a threshold of a value of 8 or above for being considered "strong". This allows us to bolster our ordinal models to see if the predictor variables they pick are similar. The assumption to meet would be linearity. To prove linearity is met, we plot the continuous predictors with the odds, and see that all plots are linear.
+We also did logistic regressions for both these response variables, where they each had a threshold of a value of 8 or above for being considered "strong". This allows us to bolster our ordinal models to see if the predictor variables they pick are similar. The assumption to meet would be linearity. To prove linearity is met, we plot the continuous predictors with the odds, and see that all plots are linear below.
+
+```{r methods-log-plots, message = F, warning = F, echo=FALSE}
+
+pass_log_strong <- pass_more |>
+  mutate(
+    strong = ifelse(strength >= 8, 1, 0)
+  )
+
+pass_log_true_strong <- pass_more |>
+  mutate(
+    true_strong = ifelse(true_val_strength >= 8, 1, 0)
+  )
+
+
+# emplogitplot1(strong ~ num_unique,
+#               data = pass_log_strong,
+#               ngroups = 3)
+# 
+# emplogitplot1(strong ~ pass_length,
+#               data = pass_log_strong,
+#               ngroups = 2)
+# 
+# emplogitplot1(strong ~ num_digits,
+#               data = pass_log_strong,
+#               ngroups = 2)
+
+
+```
 
 \footnotesize
 
@@ -211,7 +240,7 @@ We also did logistic regressions for both these response variables, where they e
 m1 <- polr(factor(strength) ~ . - password - true_val - true_val_strength - offline_crack_sec - rank - num_letters - rank_alt - font_size, data = pass_more, model = FALSE)
 sum1 <- capture.output(summary(m1))
 Start = grep("Coefficients:", sum1)
-End   = grep("AIC", sum1)
+End   = grep("num_unique", sum1)
 print(as.data.frame(sum1[Start:End]), row.names=FALSE, quote = FALSE)
 
 # temp = capture.output(summary(model))
@@ -223,18 +252,8 @@ m2 <- polr(factor(true_val_strength) ~ . - password - num_letters - offline_crac
 
 sum2 <- capture.output(summary(m2))
 Start = grep("Coefficients:", sum2)
-End   = grep("AIC", sum2)
-print(as.data.frame(unname(sum2[Start:End])), row.names=FALSE, quote = FALSE)
-
-pass_log_strong <- pass_more |>
-  mutate(
-    strong = ifelse(strength >= 8, 1, 0)
-  )
-
-pass_log_true_strong <- pass_more |>
-  mutate(
-    true_strong = ifelse(true_val_strength >= 8, 1, 0)
-  )
+End   = grep("num_unique", sum2)
+print(as.data.frame(sum2[Start:End]), row.names=FALSE, quote = FALSE)
 ```
 
 ```{r logistic, message = F, warning = F, echo=FALSE}
