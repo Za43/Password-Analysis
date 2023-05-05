@@ -1,7 +1,7 @@
 ---
 title: "How Do Password Characteristics Affect Password Strength?"
 author: "Zaid Muqsit and Zoe Spicer"
-geometry: "left=1.8cm,right=1.8cm,top=1.8cm,bottom=2cm"
+geometry: "left=1.7cm,right=1.7cm,top=1.7cm,bottom=2cm"
 format: pdf
 editor_options: 
   chunk_output_type: console
@@ -76,7 +76,7 @@ Our research question is: How do various password characteristics affect passwor
 ## Data Description
 
 | Variable Name     | Type        | Description                                                      |
-|------------------|------------------|------------------------------------|
+|-------------------|-------------------|-----------------------------------|
 | rank              | numeric     | Popularity in their database of released passwords               |
 | password          | character   | Actual text of password                                          |
 | category          | categorical | Classification of type of password                               |
@@ -318,6 +318,7 @@ true_strong_auc <- true_strong_mod_aug %>%
 knitr::kable(strong_auc, caption = "AUC for ROC of Strength")
 knitr::kable(true_strong_auc, caption = "AUC for ROC of True Strength")
 ```
+
 \normalsize
 
 # Results
@@ -342,24 +343,17 @@ Our second ordinal model shows the relationship between the same predictors and 
 
 In terms of what the key coefficients from our model mean in context, the slope for `categoryrebellious-rude` indicates that while controlling for all other predictors, our model predicts being in the rebellious-rude category to increase a password's odds of being in the next-highest strength category by 24.19 times. The slope for `pass_length` means that while controlling for all other predictors, as the password length increases by 1 character or digit, our model predicts the odds of being in the next-highest strength category to increase by 201,894.4 times.
 
+Now we will analyze our two logistic models. To do so, we will conduct a formal hypothesis test with $\alpha = 0.05$ . Our null hypothesis will be that there exists no relationship between strength or true strength and the differential odds of the other variables in the model. And our alternative hypothesis will say that such a relationship does exist. The null distribution is a standard normal distribution. Based on our strength model output, our significant predictors (i.e. the predictors with p-values less than 0.05) are num_digits and num_unique. They had p-values of $2.57e- 9$ and $2.21e-25$ respectively with z-statistics of -5.96 and 10.4. This means that we have enough evidence to reject the null hypothesis. This suggests that these two variables may have a relationship with the log_odds of a password being classified as high or low-strength.
 
+In context, interpret num_digits and num_unique
 
-Our AUC for the strength logistic regression is 0.977. In content, the AUC means that the probability of a randomly selected “strong” password having a higher predicted probability of being classified as strong than that of a “weak” password is 0.977, which is very close to 1. This means our model is a very good fit for our data. Our model also appears to be a good fit based on its high positive predictive value, which is 0.933, and the negative predicted value of 0.969. 
+Based on our model output for online crack time, our significant predictors are num_digits and pass_length. They had p values of 0.0000210 and 0.000000115 respectively with z statistics of -4.25 and 5.3. This means that we have enough evidence to reject the null hypothesis. We have evidence to suggest that these two variables may have a relationship with the log_odds of a password being classified as high or low-strength.
 
-Our AUC for the true_val logistic regression is 0.996. In content, the AUC means that the probability of a randomly selected “strong” password (here, referring to crack time category) having a higher predicted probability of being classified as strong than that of a “weak” password is 0.996. This means our model is a very good fit for our data. Our model also appears to be a good fit based on its high positive predictive value, which is 0.997, and the negative predicted value of 0.981. 
+In context, interpret
 
-*write out generic hypothesis test?* 
+Our AUC for the strength logistic regression is 0.977. In content, the AUC means that the probability of a randomly selected "strong" password having a higher predicted probability of being classified as strong than that of a "weak" password is 0.977, which is very close to 1. This means our model is a very good fit for our data. Our model also appears to be a good fit based on its high positive predictive value, which is 0.933, and the negative predicted value of 0.969.
 
-We use $\alpha = 0.05$ as our threshold for significance. 
-
-Based on our strength model output, our significant predictors (i.e. the predictors with p-valeus less than 0.05) are `num_digits` and `num_unique`. This means that we have evidence to suggest that these two variables have a relationship with the log_odds of a password being classified as high or low-strength.  
-
-In context, *interpret num_digits and num_unique* 
-
-Based on our model output for online crack time, our significant predictors are `num_digits` and pass_length`. We have evidence to suggest that these two variables have a relationship with the log_odds of a password being classified as high or low-strength.  
-
-In context, *interpret* 
-
+Our AUC for the true_val logistic regression is 0.996. In content, the AUC means that the probability of a randomly selected "strong" password (here, referring to crack time category) having a higher predicted probability of being classified as strong than that of a "weak" password is 0.996. This means our model is a very good fit for our data. Our model also appears to be a good fit based on its high positive predictive value, which is 0.997, and the negative predicted value of 0.981.
 
 # Discussion
 
