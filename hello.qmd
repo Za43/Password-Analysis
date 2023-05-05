@@ -369,4 +369,6 @@ Specops. "The Benefits of Making Password Strength More Transparent." *BleepingC
 
 Data source:
 
-Rfordatascience. "Password Data." *GitHub*, https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-14/readme.md.
+Rfordatascience. "Password Data." *GitHub*, https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/
+
+2020-01-14/readme.md.
