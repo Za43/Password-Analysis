@@ -207,14 +207,8 @@ We also did logistic regressions for both these response variables, where they e
 m1 <- polr(factor(strength) ~ . - password - true_val - true_val_strength - offline_crack_sec - rank - num_letters - rank_alt - font_size, data = pass_more)
 summary(m1)
 
-exp(coef(m1))
-
 m2 <- polr(factor(true_val_strength) ~ . - password - num_letters - offline_crack_sec - strength - rank - true_val - rank_alt - font_size, data = pass_more)
 summary(m2)
-
-exp(coef(m2))
-
-exp(12.2155)
 
 pass_log_strong <- pass_more |>
   mutate(
